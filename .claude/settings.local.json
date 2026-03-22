@@ -9,7 +9,12 @@
       "Bash(mv temp-next/.* .)",
       "Bash(rmdir temp-next:*)",
       "Bash(npm install:*)",
-      "Bash(npx shadcn@latest init -d)"
+      "Bash(npx shadcn@latest init -d)",
+      "Bash(npx shadcn@latest add card input label badge dialog dropdown-menu separator sheet table tabs toast sonner select -y)",
+      "Bash(npx shadcn@latest add card input label badge dialog dropdown-menu separator sheet table tabs sonner select -y)",
+      "Bash(npm run:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"feat: scaffold Next.js 16 project with Tailwind v4, shadcn/ui, and Mirqolyzer brand config:*)"
     ]
   }
 }
