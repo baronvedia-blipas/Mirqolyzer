@@ -40,6 +40,28 @@ export async function PATCH(
     return NextResponse.json({ error: "field_name and value required" }, { status: 400 });
   }
 
+  // Category is a direct column, not in extracted_data
+  if (field_name === "category") {
+    const { error } = await supabase
+      .from("invoices")
+      .update({ category: String(value) })
+      .eq("id", id)
+      .eq("user_id", user.id);
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    const { data } = await supabase
+      .from("invoices")
+      .select("*")
+      .eq("id", id)
+      .eq("user_id", user.id)
+      .single();
+
+    return NextResponse.json(data);
+  }
+
   const { error } = await supabase.rpc("update_invoice_field", {
     p_invoice_id: id,
     p_field_name: field_name,

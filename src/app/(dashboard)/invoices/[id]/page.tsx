@@ -7,6 +7,8 @@ import { formatDate } from "@/lib/utils/date-helpers";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DeleteInvoiceButton } from "@/components/invoices/delete-invoice-button";
+import { CategorySelector } from "@/components/invoices/category-selector";
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -29,7 +31,10 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
             <p className="text-sm text-muted-foreground">Uploaded {formatDate(invoice.created_at)}{invoice.invoice_number && ` · #${invoice.invoice_number}`}</p>
           </div>
         </div>
-        <Badge variant={invoice.status === "completed" ? "default" : "secondary"}>{invoice.status}</Badge>
+        <div className="flex items-center gap-2">
+          <Badge variant={invoice.status === "completed" ? "default" : "secondary"}>{invoice.status}</Badge>
+          <DeleteInvoiceButton invoiceId={invoice.id} />
+        </div>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
@@ -54,6 +59,11 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
           <CardContent><ExtractionView invoice={invoice} /></CardContent>
         </Card>
       </div>
+      <CategorySelector
+        invoiceId={invoice.id}
+        currentCategory={invoice.category}
+        vendorName={invoice.vendor_name}
+      />
     </div>
   );
 }

@@ -26,7 +26,13 @@
       "Bash(node -e \"const { PDFParse } = require\\(''pdf-parse''\\); const p = new PDFParse\\(\\); console.log\\(Object.getOwnPropertyNames\\(Object.getPrototypeOf\\(p\\)\\).filter\\(n => n !== ''constructor''\\)\\)\")",
       "Bash(node -e \"const { PDFParse } = require\\(''pdf-parse''\\); const p = new PDFParse\\(\\); console.log\\(typeof p.loadPDF, typeof p.getRawTextContent\\)\")",
       "Bash(node -e \"const { PDFParse } = require\\(''pdf-parse''\\); const fs = require\\(''fs''\\); const p = new PDFParse\\(\\); console.log\\(typeof p.loadPDF\\)\")",
-      "Bash(npm ls:*)"
+      "Bash(npm ls:*)",
+      "Bash(git commit -m \"feat: add complete MVP — API routes, auth, dashboard, landing page, billing, vendor learning:*)",
+      "Bash(git commit:*)",
+      "Bash(gh auth:*)",
+      "Bash(gh repo:*)",
+      "Bash(git rm:*)",
+      "Bash(ls src/components/invoices/invoice-filters.tsx src/lib/utils/categories.ts src/components/invoices/category-selector.tsx src/components/invoices/delete-invoice-button.tsx src/app/\\\\\\(dashboard\\\\\\)/dashboard/loading.tsx src/app/\\\\\\(dashboard\\\\\\)/invoices/[id]/loading.tsx src/app/\\\\\\(dashboard\\\\\\)/settings/loading.tsx src/components/invoices/bulk-uploader.tsx src/hooks/use-realtime-invoices.ts src/components/dashboard/realtime-dashboard.tsx src/components/invoices/processing-indicator.tsx e2e/landing-page.spec.ts playwright.config.ts)"
     ]
   }
 }
