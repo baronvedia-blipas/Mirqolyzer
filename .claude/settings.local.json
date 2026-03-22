@@ -14,7 +14,19 @@
       "Bash(npx shadcn@latest add card input label badge dialog dropdown-menu separator sheet table tabs sonner select -y)",
       "Bash(npm run:*)",
       "Bash(git add:*)",
-      "Bash(git commit -m \"feat: scaffold Next.js 16 project with Tailwind v4, shadcn/ui, and Mirqolyzer brand config:*)"
+      "Bash(git commit -m \"feat: scaffold Next.js 16 project with Tailwind v4, shadcn/ui, and Mirqolyzer brand config:*)",
+      "Bash(npx vitest:*)",
+      "Bash(git commit -m \"feat: add OCR pipeline, regex extraction engine, confidence scorer, and duplicate detection:*)",
+      "Bash(find src/lib/vendor-learning -name *.ts)",
+      "Bash(ls src/app/\\\\\\(auth\\\\\\)/login/page.tsx src/app/\\\\\\(auth\\\\\\)/signup/page.tsx src/app/\\\\\\(auth\\\\\\)/callback/route.ts src/app/\\\\\\(dashboard\\\\\\)/layout.tsx src/app/\\\\\\(dashboard\\\\\\)/dashboard/page.tsx src/app/\\\\\\(dashboard\\\\\\)/dashboard-shell.tsx src/app/\\\\\\(dashboard\\\\\\)/invoices/[id]/page.tsx src/app/\\\\\\(dashboard\\\\\\)/settings/page.tsx src/app/\\\\\\(dashboard\\\\\\)/billing/page.tsx src/app/\\\\\\(marketing\\\\\\)/layout.tsx src/app/\\\\\\(marketing\\\\\\)/page.tsx src/app/\\\\\\(marketing\\\\\\)/pricing/page.tsx src/components/marketing/hero.tsx src/components/marketing/features.tsx src/components/marketing/pricing-section.tsx src/components/marketing/cta.tsx src/components/layout/theme-provider.tsx src/components/layout/theme-toggle.tsx)",
+      "Bash(ls src/app/\\\\\\(marketing\\\\\\)/page.tsx)",
+      "Bash(ls src/app/\\\\\\(dashboard\\\\\\)/settings/page.tsx src/app/\\\\\\(dashboard\\\\\\)/billing/page.tsx src/app/\\\\\\(marketing\\\\\\)/pricing/page.tsx src/components/marketing/cta.tsx src/components/marketing/features.tsx src/components/marketing/pricing-section.tsx)",
+      "Bash(node -e \"const m = require\\(''pdf-parse''\\); console.log\\(Object.keys\\(m\\)\\)\")",
+      "Bash(node -e \"const { PDFParse } = require\\(''pdf-parse''\\); console.log\\(typeof PDFParse\\)\")",
+      "Bash(node -e \"const { PDFParse } = require\\(''pdf-parse''\\); const p = new PDFParse\\(\\); console.log\\(Object.getOwnPropertyNames\\(Object.getPrototypeOf\\(p\\)\\).filter\\(n => n !== ''constructor''\\)\\)\")",
+      "Bash(node -e \"const { PDFParse } = require\\(''pdf-parse''\\); const p = new PDFParse\\(\\); console.log\\(typeof p.loadPDF, typeof p.getRawTextContent\\)\")",
+      "Bash(node -e \"const { PDFParse } = require\\(''pdf-parse''\\); const fs = require\\(''fs''\\); const p = new PDFParse\\(\\); console.log\\(typeof p.loadPDF\\)\")",
+      "Bash(npm ls:*)"
     ]
   }
 }
