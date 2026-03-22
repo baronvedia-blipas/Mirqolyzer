@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/ClaudecodeProjects//**)",
+      "Bash(npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(npx create-next-app@latest temp-next --typescript --tailwind --eslint --app --src-dir --import-alias \"@/*\" --use-npm --yes)",
+      "Bash(shopt -s dotglob)",
+      "Bash(mv temp-next/* .)",
+      "Bash(mv temp-next/.* .)",
+      "Bash(rmdir temp-next:*)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init -d)"
+    ]
+  }
+}
