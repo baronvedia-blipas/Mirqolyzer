@@ -51,7 +51,7 @@ export function MonthlySpendChart({ data, currency }: MonthlySpendChartProps) {
                 width={80}
               />
               <Tooltip
-                formatter={(value: number) => [formatCurrency(value, currency), "Spend"]}
+                formatter={(value: unknown) => [formatCurrency(Number(value), currency), "Spend"]}
                 contentStyle={{
                   backgroundColor: "hsl(var(--card))",
                   border: "1px solid hsl(var(--border))",

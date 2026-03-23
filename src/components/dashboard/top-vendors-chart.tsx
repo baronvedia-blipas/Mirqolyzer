@@ -64,7 +64,7 @@ export function TopVendorsChart({ data, currency }: TopVendorsChartProps) {
                 width={120}
               />
               <Tooltip
-                formatter={(value: number) => [formatCurrency(value, currency), "Total Spend"]}
+                formatter={(value: unknown) => [formatCurrency(Number(value), currency), "Total Spend"]}
                 contentStyle={{
                   backgroundColor: "hsl(var(--card))",
                   border: "1px solid hsl(var(--border))",

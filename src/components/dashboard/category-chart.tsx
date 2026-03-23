@@ -84,7 +84,7 @@ export function CategoryChart({ data, totalAmount, currency }: CategoryChartProp
                   ))}
                 </Pie>
                 <Tooltip
-                  formatter={(value: number) => [formatCurrency(value, currency), "Amount"]}
+                  formatter={(value: unknown) => [formatCurrency(Number(value), currency), "Amount"]}
                   contentStyle={{
                     backgroundColor: "hsl(var(--card))",
                     border: "1px solid hsl(var(--border))",
