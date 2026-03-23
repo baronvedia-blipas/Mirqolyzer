@@ -171,6 +171,40 @@ const en = {
   "notFound.description": "The page you're looking for doesn't exist",
   "notFound.home": "Back to home",
   "notFound.dashboard": "Go to dashboard",
+
+  // How It Works
+  "howItWorks.title": "How it works",
+  "howItWorks.step1Title": "Upload your invoice",
+  "howItWorks.step1Desc": "Drag and drop or select PDF, PNG, or JPG files",
+  "howItWorks.step2Title": "Automatic analysis",
+  "howItWorks.step2Desc": "Our OCR engine extracts all data in seconds",
+  "howItWorks.step3Title": "Data ready",
+  "howItWorks.step3Desc": "Review, edit, and export your structured data",
+
+  // Testimonials
+  "testimonials.title": "What our users say",
+  "testimonials.subtitle": "Bolivian companies that trust Mirqolyzer",
+  "testimonials.quote1": "Mirqolyzer reduced our invoice processing time by 80%. We now process hundreds of receipts in minutes.",
+  "testimonials.role1": "Accountant",
+  "testimonials.quote2": "The best tool for managing bank receipts. It perfectly recognizes Bolivian formats.",
+  "testimonials.role2": "Finance Manager",
+  "testimonials.quote3": "Simple, fast, and accurate. Exactly what we needed for our accounting.",
+  "testimonials.role3": "Founder",
+
+  // FAQ
+  "faq.title": "Frequently asked questions",
+  "faq.q1": "What file types can I upload?",
+  "faq.a1": "You can upload PDF, PNG, JPG, and WEBP files up to 10MB each.",
+  "faq.q2": "Does it work with Bolivian bank receipts?",
+  "faq.a2": "Yes, our extraction engine recognizes formats from banks like BNB, BMSC, Banco Unión, Banco Mercantil, and more.",
+  "faq.q3": "Do I need an internet connection?",
+  "faq.a3": "Yes, OCR processing runs on our servers to ensure speed and accuracy.",
+  "faq.q4": "Is my data secure?",
+  "faq.a4": "Absolutely. We use encryption in transit and at rest, plus row-level security (RLS) so only you can access your data.",
+  "faq.q5": "Can I export my data?",
+  "faq.a5": "Yes, CSV export is available on all plans. JSON export is available on Pro and Business plans.",
+  "faq.q6": "How does the free plan work?",
+  "faq.a6": "The free plan includes up to 5 invoices per month, no credit card required. You can upgrade anytime.",
 } as const;
 
 export default en;
