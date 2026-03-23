@@ -3,9 +3,7 @@ import path from "path";
 
 export default defineConfig({
   test: {
-    environment: "jsdom",
-    globals: true,
-    setupFiles: ["./src/test-setup.ts"],
+    environment: "node",
     include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
   },
   resolve: {

@@ -91,6 +91,18 @@ describe("extractDates", () => {
     expect(results[0].value).toBe("2026-03-18");
   });
 
+  it("matches '26 feb. 2026' (abbreviated Spanish month)", () => {
+    const results = extractDates("26 feb. 2026 | 02:35 p. m.");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe("2026-02-26");
+  });
+
+  it("matches '3 mar 2025' (no period after month)", () => {
+    const results = extractDates("3 mar 2025");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe("2025-03-03");
+  });
+
   it("returns empty array for no dates", () => {
     const results = extractDates("No dates here");
     expect(results).toEqual([]);
@@ -138,6 +150,18 @@ describe("extractAmounts", () => {
     const results = extractAmounts("Total: R$ 1.234,56");
     expect(results.length).toBeGreaterThan(0);
     expect(results[0].value).toBe(1234.56);
+  });
+
+  it("matches 'Bs 120' (no decimals)", () => {
+    const results = extractAmounts("Bs 120");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe(120);
+  });
+
+  it("matches 'Bs120' (no space, no decimals)", () => {
+    const results = extractAmounts("Bs120");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe(120);
   });
 
   it("returns empty for no amounts", () => {

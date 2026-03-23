@@ -31,18 +31,17 @@ export function extractInvoiceNumber(text: string): FieldMatch | null {
 // ── Dates ───────────────────────────────────────────────────────
 
 const MONTH_MAP: Record<string, string> = {
-  // English
+  // English (also covers shared abbreviations: feb, mar, jun, jul, sep, oct, nov)
   jan: "01", feb: "02", mar: "03", apr: "04", may: "05", jun: "06",
   jul: "07", aug: "08", sep: "09", oct: "10", nov: "11", dec: "12",
   january: "01", february: "02", march: "03", april: "04",
   june: "06", july: "07", august: "08", september: "09",
   october: "10", november: "11", december: "12",
-  // Spanish
-  ene: "01", feb_es: "02", mar_es: "03", abr: "04", mayo: "05", jun_es: "06",
-  jul_es: "07", ago: "08", sep_es: "09", oct_es: "10", nov_es: "11", dic: "12",
+  // Spanish-only abbreviations and full names
+  ene: "01", abr: "04", ago: "08", dic: "12",
   enero: "01", febrero: "02", marzo: "03", abril: "04",
-  junio: "06", julio: "07", agosto: "08", septiembre: "09",
-  octubre: "10", noviembre: "11", diciembre: "12",
+  mayo: "05", junio: "06", julio: "07", agosto: "08",
+  septiembre: "09", octubre: "10", noviembre: "11", diciembre: "12",
   // Portuguese
   janeiro: "01", fevereiro: "02", março: "03", maio: "05",
   junho: "06", julho: "07", setembro: "09", outubro: "10",
@@ -119,6 +118,20 @@ export function extractDates(text: string): DateMatch[] {
     }
   }
 
+  // "26 feb. 2026", "3 mar 2025", "15 ene. 2024" (day + abbreviated month + year)
+  const dayMonthYear = /(\d{1,2})\s+(\w{3,})\.?\s+(\d{4})/gi;
+  while ((match = dayMonthYear.exec(text)) !== null) {
+    const monthKey = match[2].toLowerCase().replace(/\.$/, "");
+    const monthStr = MONTH_MAP[monthKey];
+    if (monthStr) {
+      const day = match[1].padStart(2, "0");
+      const dateVal = `${match[3]}-${monthStr}-${day}`;
+      if (!dates.some((d) => d.value === dateVal)) {
+        dates.push({ value: dateVal, confidence: 0.88 });
+      }
+    }
+  }
+
   return dates;
 }
 
@@ -134,7 +147,7 @@ export function extractAmounts(text: string): AmountMatch[] {
   const amounts: AmountMatch[] = [];
   let match;
 
-  // Latin American format: "Bs. 900.00", "Bs 1,234.56", "S/. 500.00", "Q. 300.00", "RD$ 1,000.00"
+  // Latin American format with decimals: "Bs. 900.00", "Bs 1,234.56", "S/. 500.00"
   const latamRegex = /(?:Bs\.?|S\/\.?|Q\.?|RD\$|R\$|L\.?)\s*(\d{1,3}(?:[.,]\d{3})*[.,]\d{2})\b/gi;
   while ((match = latamRegex.exec(text)) !== null) {
     const raw = match[1];
@@ -149,6 +162,17 @@ export function extractAmounts(text: string): AmountMatch[] {
     }
     if (!isNaN(value) && value > 0) {
       amounts.push({ value, confidence: 0.95, raw: match[0] });
+    }
+  }
+
+  // Latin American format WITHOUT decimals: "Bs 120", "Bs120", "S/. 500", "R$ 1.000"
+  const latamIntRegex = /(?:Bs\.?|S\/\.?|Q\.?|RD\$|R\$|L\.?)\s*(\d{1,3}(?:[.,]\d{3})*)(?!\d|[.,]\d)/gi;
+  while ((match = latamIntRegex.exec(text)) !== null) {
+    const raw = match[1];
+    // Remove thousand separators
+    const value = parseFloat(raw.replace(/[.,]/g, ""));
+    if (!isNaN(value) && value > 0 && !amounts.some((a) => a.value === value)) {
+      amounts.push({ value, confidence: 0.85, raw: match[0] });
     }
   }
 
