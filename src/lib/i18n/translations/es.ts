@@ -7,6 +7,19 @@ const es = {
   "dashboard.totalValue": "Valor Total",
   "dashboard.welcome": "Bienvenido",
   "dashboard.welcomeSubtitle": "Aqu\u00ed est\u00e1 el resumen de tus facturas",
+  "dashboard.lastInvoice": "\u00daltima factura",
+  "dashboard.frequentVendor": "Proveedor frecuente",
+  "dashboard.mainCurrency": "Moneda principal",
+  "dashboard.avgConfidence": "Confianza promedio",
+  "dashboard.noInvoices": "Sin facturas",
+
+  // Onboarding
+  "onboarding.title": "Comienza a analizar tus facturas",
+  "onboarding.subtitle": "En tres simples pasos, extrae toda la informaci\u00f3n de tus facturas autom\u00e1ticamente",
+  "onboarding.step1": "Sube tu primera factura",
+  "onboarding.step2": "El sistema extrae los datos autom\u00e1ticamente",
+  "onboarding.step3": "Revisa y exporta tus datos",
+  "onboarding.cta": "Subir mi primera factura",
 
   // Upload
   "upload.dragDrop": "Arrastra tu factura aqu\u00ed, o",
@@ -144,6 +157,54 @@ const es = {
 
   // Confidence
   "confidence.overall": "Confianza general",
+
+  // Vendors
+  "nav.vendors": "Proveedores",
+  "vendors.title": "Proveedores",
+  "vendors.invoiceCount": "facturas",
+  "vendors.totalSpend": "Gasto total",
+  "vendors.lastInvoice": "Última factura",
+  "vendors.empty": "Sube facturas para ver tus proveedores",
+
+  // Not Found
+  "notFound.title": "Página no encontrada",
+  "notFound.description": "La página que buscas no existe o fue movida",
+  "notFound.home": "Volver al inicio",
+  "notFound.dashboard": "Ir al panel",
+
+  // How It Works
+  "howItWorks.title": "Cómo funciona",
+  "howItWorks.step1Title": "Sube tu factura",
+  "howItWorks.step1Desc": "Arrastra o selecciona archivos PDF, PNG o JPG",
+  "howItWorks.step2Title": "Análisis automático",
+  "howItWorks.step2Desc": "Nuestro motor OCR extrae todos los datos en segundos",
+  "howItWorks.step3Title": "Datos listos",
+  "howItWorks.step3Desc": "Revisa, edita y exporta tus datos estructurados",
+
+  // Testimonials
+  "testimonials.title": "Lo que dicen nuestros usuarios",
+  "testimonials.subtitle": "Empresas bolivianas que confían en Mirqolyzer",
+  "testimonials.quote1": "Mirqolyzer redujo nuestro tiempo de procesamiento de facturas en un 80%. Ahora procesamos cientos de comprobantes en minutos.",
+  "testimonials.role1": "Contadora",
+  "testimonials.quote2": "La mejor herramienta para gestionar comprobantes bancarios. Reconoce perfectamente los formatos bolivianos.",
+  "testimonials.role2": "Gerente Financiero",
+  "testimonials.quote3": "Simple, rápido y preciso. Exactamente lo que necesitábamos para nuestra contabilidad.",
+  "testimonials.role3": "Fundadora",
+
+  // FAQ
+  "faq.title": "Preguntas frecuentes",
+  "faq.q1": "¿Qué tipos de archivo puedo subir?",
+  "faq.a1": "Puedes subir archivos PDF, PNG, JPG y WEBP con un tamaño máximo de 10MB por archivo.",
+  "faq.q2": "¿Funciona con comprobantes bancarios bolivianos?",
+  "faq.a2": "Sí, nuestro motor de extracción reconoce formatos de bancos como BNB, BMSC, Banco Unión, Banco Mercantil y más.",
+  "faq.q3": "¿Necesito conexión a internet?",
+  "faq.a3": "Sí, el procesamiento OCR se realiza en nuestros servidores para garantizar velocidad y precisión.",
+  "faq.q4": "¿Mis datos están seguros?",
+  "faq.a4": "Absolutamente. Usamos encriptación en tránsito y en reposo, además de seguridad a nivel de fila (RLS) para que solo tú accedas a tus datos.",
+  "faq.q5": "¿Puedo exportar mis datos?",
+  "faq.a5": "Sí, la exportación en CSV está disponible en todos los planes. La exportación en JSON está disponible en los planes Pro y Business.",
+  "faq.q6": "¿Cómo funciona el plan gratuito?",
+  "faq.a6": "El plan gratuito incluye hasta 5 facturas por mes, sin necesidad de tarjeta de crédito. Puedes mejorar tu plan en cualquier momento.",
 } as const;
 
 export default es;

@@ -7,6 +7,19 @@ const en = {
   "dashboard.totalValue": "Total Value",
   "dashboard.welcome": "Welcome",
   "dashboard.welcomeSubtitle": "Here is your invoice summary",
+  "dashboard.lastInvoice": "Last Invoice",
+  "dashboard.frequentVendor": "Frequent Vendor",
+  "dashboard.mainCurrency": "Main Currency",
+  "dashboard.avgConfidence": "Avg. Confidence",
+  "dashboard.noInvoices": "No invoices",
+
+  // Onboarding
+  "onboarding.title": "Start analyzing your invoices",
+  "onboarding.subtitle": "In three simple steps, extract all your invoice data automatically",
+  "onboarding.step1": "Upload your first invoice",
+  "onboarding.step2": "The system extracts data automatically",
+  "onboarding.step3": "Review and export your data",
+  "onboarding.cta": "Upload my first invoice",
 
   // Upload
   "upload.dragDrop": "Drag & drop your invoice here, or",
@@ -144,6 +157,20 @@ const en = {
 
   // Confidence
   "confidence.overall": "Overall confidence",
+
+  // Vendors
+  "nav.vendors": "Vendors",
+  "vendors.title": "Vendors",
+  "vendors.invoiceCount": "invoices",
+  "vendors.totalSpend": "Total spend",
+  "vendors.lastInvoice": "Last invoice",
+  "vendors.empty": "Upload invoices to see your vendors",
+
+  // Not Found
+  "notFound.title": "Page not found",
+  "notFound.description": "The page you're looking for doesn't exist",
+  "notFound.home": "Back to home",
+  "notFound.dashboard": "Go to dashboard",
 } as const;
 
 export default en;

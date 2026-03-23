@@ -11,6 +11,8 @@ import { CategoryChart } from "@/components/dashboard/category-chart";
 import { TopVendorsChart } from "@/components/dashboard/top-vendors-chart";
 import { getCategoryLabel } from "@/lib/utils/categories";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
+import { OnboardingGuide } from "@/components/dashboard/onboarding-guide";
+import { EnrichedStats } from "@/components/dashboard/enriched-stats";
 
 interface DashboardPageProps {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -110,11 +112,17 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     <div className="space-y-8">
       <WelcomeBanner name={displayName} />
 
+      <OnboardingGuide show={all.length === 0} />
+
       <section>
         <Stats total={all.length} completed={completed.length} processing={all.filter((i) => i.status === "processing").length} failed={all.filter((i) => i.status === "failed").length} totalAmount={totalAmount} currency="USD" />
       </section>
 
       <section>
+        <EnrichedStats invoices={all} />
+      </section>
+
+      <section data-upload-tabs>
         <UploadTabs />
       </section>
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Settings, CreditCard } from "lucide-react";
+import { LayoutDashboard, Users, Settings, CreditCard } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { Profile } from "@/types/user";
 import { getPlanLimits } from "@/lib/stripe/plans";
@@ -10,6 +10,7 @@ import { useLanguage } from "@/lib/i18n/context";
 
 const NAV_ITEMS = [
   { href: "/dashboard", labelKey: "nav.dashboard" as const, icon: LayoutDashboard },
+  { href: "/dashboard/vendors", labelKey: "nav.vendors" as const, icon: Users },
   { href: "/dashboard/settings", labelKey: "nav.settings" as const, icon: Settings },
   { href: "/dashboard/billing", labelKey: "nav.billing" as const, icon: CreditCard },
 ];
