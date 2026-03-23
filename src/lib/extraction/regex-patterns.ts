@@ -208,23 +208,55 @@ export function extractAmounts(text: string): AmountMatch[] {
 
 // ── Currency ────────────────────────────────────────────────────
 
+// Known Bolivian banks/financial institutions (helps detect BOB currency and vendor)
+const BOLIVIAN_ENTITIES = [
+  "jesus nazareno", "jes[uú]s nazareno",
+  "banco de cr[eé]dito de bolivia",
+  "banco mercantil santa cruz", "bmsc",
+  "banco uni[oó]n", "banco union",
+  "banco nacional de bolivia", "bnb",
+  "banco bisa",
+  "banco econ[oó]mico", "banco economico",
+  "banco fie",
+  "banco ganadero",
+  "banco sol", "bancosol",
+  "banco fortaleza",
+  "banco prodem",
+  "banco fassil",
+  "banco pyme",
+  "ecofuturo",
+  "cooperativa", "cooperativa de ahorro",
+  "tigo money", "yape",
+];
+
+const BOLIVIAN_REGEX = new RegExp(BOLIVIAN_ENTITIES.join("|"), "i");
+
+export function isBolivianDocument(text: string): boolean {
+  if (BOLIVIAN_REGEX.test(text)) return true;
+  if (/\bbolivian[oa]s?\b/i.test(text)) return true;
+  if (/\bBOB\b/.test(text)) return true;
+  if (/\bBs\.?\s*\d/i.test(text)) return true;
+  return false;
+}
+
 export function extractCurrency(text: string): string {
   const upper = text.toUpperCase();
+  // Bolivian detection (text says "Bolivianos", known bank names, or "Bs.")
+  if (isBolivianDocument(text)) return "BOB";
   // Latin American currencies (check before USD since some use $ symbol)
-  if (/\bBs\.?\s*\d/i.test(text) || /\bBOB\b/.test(upper)) return "BOB";
-  if (/\bS\/\.?\s*\d/i.test(text) || /\bPEN\b/.test(upper)) return "PEN";
+  if (/\bS\/\.?\s*\d/i.test(text) || /\bPEN\b/.test(upper) || /\bsoles?\b/i.test(text)) return "PEN";
   if (/\bRD\$/.test(text) || /\bDOP\b/.test(upper)) return "DOP";
-  if (/\bR\$/.test(text) || /\bBRL\b/.test(upper)) return "BRL";
-  if (/\bQ\.?\s*\d/i.test(text) || /\bGTQ\b/.test(upper)) return "GTQ";
-  if (/\bL\.?\s*\d/i.test(text) || /\bHNL\b/.test(upper)) return "HNL";
-  if (/\bMXN\b/.test(upper)) return "MXN";
-  if (/\bCOP\b/.test(upper)) return "COP";
-  if (/\bARS\b/.test(upper)) return "ARS";
+  if (/\bR\$/.test(text) || /\bBRL\b/.test(upper) || /\breais?\b/i.test(text)) return "BRL";
+  if (/\bQ\.?\s*\d/i.test(text) || /\bGTQ\b/.test(upper) || /\bquetzal/i.test(text)) return "GTQ";
+  if (/\bL\.?\s*\d/i.test(text) || /\bHNL\b/.test(upper) || /\blempira/i.test(text)) return "HNL";
+  if (/\bMXN\b/.test(upper) || /\bpesos?\s+mexic/i.test(text)) return "MXN";
+  if (/\bCOP\b/.test(upper) || /\bpesos?\s+colomb/i.test(text)) return "COP";
+  if (/\bARS\b/.test(upper) || /\bpesos?\s+argent/i.test(text)) return "ARS";
   if (/\bCLP\b/.test(upper)) return "CLP";
   if (/\bUYU\b/.test(upper)) return "UYU";
-  if (/\bPYG\b/.test(upper)) return "PYG";
+  if (/\bPYG\b/.test(upper) || /\bguaran[ií]/i.test(text)) return "PYG";
   // International
-  if (/\bEUR\b/.test(upper) || /\u20AC/.test(text)) return "EUR";
+  if (/\bEUR\b/.test(upper) || /\u20AC/.test(text) || /\beuros?\b/i.test(text)) return "EUR";
   if (/\bGBP\b/.test(upper) || /\u00A3/.test(text)) return "GBP";
   if (/\bCAD\b/.test(upper)) return "CAD";
   if (/\bAUD\b/.test(upper)) return "AUD";
@@ -239,11 +271,19 @@ export function extractCurrency(text: string): string {
 
 function extractLabeledAmount(text: string, labels: RegExp): FieldMatch | null {
   const lines = text.split("\n");
-  for (const line of lines) {
-    if (labels.test(line)) {
-      const amounts = extractAmounts(line);
+  for (let i = 0; i < lines.length; i++) {
+    if (labels.test(lines[i])) {
+      // Check same line first
+      const amounts = extractAmounts(lines[i]);
       if (amounts.length > 0) {
         return { value: amounts[0].value, confidence: amounts[0].confidence };
+      }
+      // Check next line (common in formatted receipts: "MONTO:\n200.00")
+      if (i + 1 < lines.length) {
+        const nextAmounts = extractAmounts(lines[i + 1]);
+        if (nextAmounts.length > 0) {
+          return { value: nextAmounts[0].value, confidence: nextAmounts[0].confidence * 0.95 };
+        }
       }
     }
   }
@@ -277,10 +317,12 @@ export function extractSubtotal(text: string): FieldMatch | null {
 // ── Vendor Name ─────────────────────────────────────────────────
 
 // Labels/headers that should NOT be treated as vendor names
-const SKIP_LINES = /^(invoice|factura|receipt|recibo|bill|statement|tax|date|page|tel|fax|email|phone|www\.|http|monto|importe|total|subtotal|fecha|motivo|concepto|detalle|descripci[oó]n|cantidad|precio|observaci[oó]n|de la cuenta|a la cuenta|a nombre de|del banco|n[uú]mero|guardar|enviar|escanea|comprobante)/i;
+const SKIP_LINES = /^(invoice|factura|receipt|recibo|bill|statement|tax|date|page|tel|fax|email|phone|www\.|http|monto|importe|total|subtotal|fecha|motivo|concepto|detalle|descripci[oó]n|cantidad|precio|observaci[oó]n|de la cuenta|a la cuenta|a nombre de|del banco|n[uú]mero|guardar|enviar|escanea|comprobante|transferencia|moneda|cuenta|destino|origen|nombre|realizado|ci:|nro\.|datos)/i;
 
 // Look for bank/company names explicitly labeled
 const VENDOR_LABEL_PATTERNS = [
+  // "BANCO DESTINO: Banco XYZ S.A." (Bolivian transfer receipts)
+  /(?:banco\s+destino|entidad\s+destino)[\s:]+(.{3,60})/i,
   // "Del banco: Banco XYZ", "Banco: ABC"
   /(?:del\s+banco|banco)[\s:]+(.{3,50})/i,
   // "Empresa: Company Name", "Razón social: Name"

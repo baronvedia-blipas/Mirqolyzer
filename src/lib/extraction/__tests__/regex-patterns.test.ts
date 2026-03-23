@@ -187,6 +187,22 @@ describe("extractCurrency", () => {
     expect(extractCurrency("Monto\nBs. 900.00")).toBe("BOB");
   });
 
+  it("detects BOB from 'Bolivianos'", () => {
+    expect(extractCurrency("MONTO: 200.00\nMONEDA: Bolivianos")).toBe("BOB");
+  });
+
+  it("detects BOB from Bolivian bank name", () => {
+    expect(extractCurrency("BANCO DESTINO: BANCO DE CREDITO DE BOLIVIA S.A.")).toBe("BOB");
+  });
+
+  it("detects BOB from Jesús Nazareno", () => {
+    expect(extractCurrency("Jesús Nazareno\nTransferencia exitosa")).toBe("BOB");
+  });
+
+  it("detects BOB from Yape", () => {
+    expect(extractCurrency("¡Yapeaste!\nBs 120")).toBe("BOB");
+  });
+
   it("detects PEN from 'S/.'", () => {
     expect(extractCurrency("Total: S/. 500.00")).toBe("PEN");
   });
@@ -289,6 +305,13 @@ describe("extractVendorName", () => {
     const text = "Monto\nBs. 900.00\nDel banco\nBanco de Crédito de Bolivia S.A.";
     const result = extractVendorName(text);
     expect(result?.value).toBe("Banco de Crédito de Bolivia S.A.");
+    expect(result?.confidence).toBe(0.85);
+  });
+
+  it("extracts bank from 'BANCO DESTINO:' label", () => {
+    const text = "FECHA: 12/02/2026\nBANCO DESTINO: BANCO DE CREDITO DE BOLIVIA S.A.\nNOMBRE: MIRKO";
+    const result = extractVendorName(text);
+    expect(result?.value).toBe("BANCO DE CREDITO DE BOLIVIA S.A.");
     expect(result?.confidence).toBe(0.85);
   });
 
