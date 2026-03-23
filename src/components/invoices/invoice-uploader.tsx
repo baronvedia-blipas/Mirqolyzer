@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Upload, FileText, Loader2, AlertCircle } from "lucide-react";
+import { Upload, FileText, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -54,39 +54,104 @@ export function InvoiceUploader() {
   const isProcessing = ["validating", "uploading", "processing"].includes(uploadState.status);
 
   return (
-    <Card className={cn("relative border-2 border-dashed transition-colors p-8", dragOver ? "border-primary bg-primary/5" : "border-muted-foreground/25 hover:border-primary/50", uploadState.status === "error" && "border-destructive/50 bg-destructive/5")}
-      onDragOver={(e) => { e.preventDefault(); setDragOver(true); }} onDragLeave={() => setDragOver(false)} onDrop={handleDrop}>
-      <div className="flex flex-col items-center justify-center text-center gap-4">
+    <Card
+      className={cn(
+        "relative border-2 border-dashed transition-all duration-300 overflow-hidden",
+        dragOver
+          ? "border-primary bg-primary/5 scale-[1.01] shadow-lg"
+          : "border-muted-foreground/20 hover:border-primary/40 hover:bg-primary/[0.02]",
+        uploadState.status === "error" && "border-destructive/50 bg-destructive/5",
+        uploadState.status === "idle" && "animate-[border-pulse_3s_ease-in-out_infinite]",
+      )}
+      style={uploadState.status === "idle" ? {
+        animation: "border-pulse 3s ease-in-out infinite",
+      } : undefined}
+      onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+      onDragLeave={() => setDragOver(false)}
+      onDrop={handleDrop}
+    >
+      {/* Subtle background pattern for idle state */}
+      {uploadState.status === "idle" && (
+        <div className="absolute inset-0 opacity-[0.02] pointer-events-none"
+          style={{
+            backgroundImage: "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)",
+            backgroundSize: "24px 24px",
+          }}
+        />
+      )}
+
+      <div className="relative flex flex-col items-center justify-center text-center gap-4 p-8">
         {isProcessing ? (
           <>
-            <Loader2 className="h-10 w-10 text-primary animate-spin" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium">
+            <div className="relative">
+              <div className="h-14 w-14 rounded-full border-4 border-primary/20 flex items-center justify-center">
+                <Loader2 className="h-7 w-7 text-primary animate-spin" />
+              </div>
+              {/* Progress ring overlay */}
+              <svg className="absolute inset-0 h-14 w-14 -rotate-90" viewBox="0 0 56 56">
+                <circle
+                  cx="28" cy="28" r="24"
+                  fill="none"
+                  stroke="hsl(var(--primary))"
+                  strokeWidth="4"
+                  strokeDasharray={`${uploadState.progress * 1.5} 150`}
+                  strokeLinecap="round"
+                  className="transition-all duration-700"
+                />
+              </svg>
+            </div>
+            <div className="space-y-2">
+              <p className="text-sm font-semibold text-foreground">
                 {uploadState.status === "validating" && t("upload.validating")}
                 {uploadState.status === "uploading" && t("upload.uploading")}
                 {uploadState.status === "processing" && t("upload.extracting")}
               </p>
-              <div className="h-2 w-48 bg-muted rounded-full overflow-hidden mx-auto">
-                <div className="h-full bg-primary rounded-full transition-all duration-500" style={{ width: `${uploadState.progress}%` }} />
+              <div className="h-1.5 w-56 bg-muted rounded-full overflow-hidden mx-auto">
+                <div
+                  className="h-full bg-gradient-to-r from-primary/80 to-primary rounded-full transition-all duration-700 ease-out"
+                  style={{ width: `${uploadState.progress}%` }}
+                />
               </div>
+              <p className="text-xs text-muted-foreground">{uploadState.progress}%</p>
             </div>
           </>
         ) : uploadState.status === "error" ? (
           <>
-            <AlertCircle className="h-10 w-10 text-destructive" />
+            <div className="h-14 w-14 rounded-full bg-destructive/10 flex items-center justify-center">
+              <AlertCircle className="h-7 w-7 text-destructive" />
+            </div>
             <div className="space-y-2">
-              <p className="text-sm text-destructive">{uploadState.error}</p>
-              {uploadState.duplicateId && <Button variant="link" size="sm" onClick={() => router.push(`/dashboard/invoices/${uploadState.duplicateId}`)}>{t("upload.viewExisting")}</Button>}
-              <Button variant="outline" size="sm" onClick={() => setUploadState({ status: "idle", progress: 0 })}>{t("upload.tryAgain")}</Button>
+              <p className="text-sm font-medium text-destructive">{uploadState.error}</p>
+              {uploadState.duplicateId && (
+                <Button variant="link" size="sm" onClick={() => router.push(`/dashboard/invoices/${uploadState.duplicateId}`)}>
+                  {t("upload.viewExisting")}
+                </Button>
+              )}
+              <Button variant="outline" size="sm" onClick={() => setUploadState({ status: "idle", progress: 0 })}>
+                {t("upload.tryAgain")}
+              </Button>
             </div>
           </>
         ) : uploadState.status === "done" ? (
-          <><FileText className="h-10 w-10 text-success" /><p className="text-sm text-success font-medium">{t("upload.success")}</p></>
+          <div className="flex flex-col items-center gap-3">
+            <div className="h-14 w-14 rounded-full bg-success/10 flex items-center justify-center animate-in zoom-in-50 duration-300">
+              <CheckCircle2 className="h-7 w-7 text-success" />
+            </div>
+            <p className="text-sm text-success font-semibold">{t("upload.success")}</p>
+          </div>
         ) : (
           <>
-            <Upload className="h-10 w-10 text-muted-foreground" />
-            <div className="space-y-1">
-              <p className="text-sm font-medium">{t("upload.dragDrop")}{" "}<label className="text-primary cursor-pointer hover:underline">{t("upload.browse")}<input type="file" className="hidden" accept=".pdf,.png,.jpg,.jpeg,.webp" onChange={handleFileInput} /></label></p>
+            <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
+              <Upload className="h-6 w-6 text-primary" />
+            </div>
+            <div className="space-y-1.5">
+              <p className="text-sm font-semibold text-foreground">
+                {t("upload.dragDrop")}{" "}
+                <label className="text-primary cursor-pointer hover:underline underline-offset-2 transition-colors">
+                  {t("upload.browse")}
+                  <input type="file" className="hidden" accept=".pdf,.png,.jpg,.jpeg,.webp" onChange={handleFileInput} />
+                </label>
+              </p>
               <p className="text-xs text-muted-foreground">{t("upload.fileTypes")}</p>
             </div>
           </>

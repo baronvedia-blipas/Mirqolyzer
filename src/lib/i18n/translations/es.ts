@@ -5,6 +5,8 @@ const es = {
   "dashboard.completed": "Completadas",
   "dashboard.processing": "Procesando",
   "dashboard.totalValue": "Valor Total",
+  "dashboard.welcome": "Bienvenido",
+  "dashboard.welcomeSubtitle": "Aqu\u00ed est\u00e1 el resumen de tus facturas",
 
   // Upload
   "upload.dragDrop": "Arrastra tu factura aqu\u00ed, o",

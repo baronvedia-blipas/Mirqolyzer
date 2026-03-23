@@ -5,6 +5,8 @@ const en = {
   "dashboard.completed": "Completed",
   "dashboard.processing": "Processing",
   "dashboard.totalValue": "Total Value",
+  "dashboard.welcome": "Welcome",
+  "dashboard.welcomeSubtitle": "Here is your invoice summary",
 
   // Upload
   "upload.dragDrop": "Drag & drop your invoice here, or",

@@ -30,17 +30,8 @@ const COLORS = [
   "#a855f7",
 ];
 
-interface LabelProps {
-  cx: number;
-  cy: number;
-  midAngle: number;
-  innerRadius: number;
-  outerRadius: number;
-  percent: number;
-  name: string;
-}
-
-function renderLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }: LabelProps) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function renderLabel({ cx, cy, midAngle, innerRadius, outerRadius, percent, name }: any) {
   if (percent < 0.05) return null;
   const RADIAN = Math.PI / 180;
   const radius = innerRadius + (outerRadius - innerRadius) * 1.4;

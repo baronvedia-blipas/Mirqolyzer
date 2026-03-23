@@ -10,6 +10,7 @@ import { MonthlySpendChart } from "@/components/dashboard/monthly-spend-chart";
 import { CategoryChart } from "@/components/dashboard/category-chart";
 import { TopVendorsChart } from "@/components/dashboard/top-vendors-chart";
 import { getCategoryLabel } from "@/lib/utils/categories";
+import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 
 interface DashboardPageProps {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -97,22 +98,45 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     .slice(0, 5)
     .map(([name, total]) => ({ name, total }));
 
+  // Get user's display name for welcome banner
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name")
+    .eq("id", user.id)
+    .single();
+  const displayName = profile?.full_name || user.email?.split("@")[0] || "User";
+
   return (
-    <div className="space-y-6">
-      <DashboardTitle />
-      <Stats total={all.length} completed={completed.length} processing={all.filter((i) => i.status === "processing").length} failed={all.filter((i) => i.status === "failed").length} totalAmount={totalAmount} currency="USD" />
-      <UploadTabs />
-      <Suspense fallback={null}>
-        <InvoiceFilters />
-      </Suspense>
-      <RecentInvoices invoices={all.slice(0, 20)} />
+    <div className="space-y-8">
+      <WelcomeBanner name={displayName} />
+
+      <section>
+        <Stats total={all.length} completed={completed.length} processing={all.filter((i) => i.status === "processing").length} failed={all.filter((i) => i.status === "failed").length} totalAmount={totalAmount} currency="USD" />
+      </section>
+
+      <section>
+        <UploadTabs />
+      </section>
+
+      <section>
+        <Suspense fallback={null}>
+          <InvoiceFilters />
+        </Suspense>
+      </section>
+
+      <section>
+        <RecentInvoices invoices={all.slice(0, 20)} />
+      </section>
 
       {/* Analytics Charts */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <MonthlySpendChart data={monthlySpendData} currency={currency} />
         <CategoryChart data={categoryData} totalAmount={totalAmount} currency={currency} />
-      </div>
-      <TopVendorsChart data={topVendorsData} currency={currency} />
+      </section>
+
+      <section>
+        <TopVendorsChart data={topVendorsData} currency={currency} />
+      </section>
     </div>
   );
 }
