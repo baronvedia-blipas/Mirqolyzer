@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, FileText, Loader2, AlertCircle, CheckCircle, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ export function BulkUploader() {
   const [files, setFiles] = useState<FileUploadState[]>([]);
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const addFiles = useCallback((newFiles: FileList | File[]) => {
     const validated: FileUploadState[] = Array.from(newFiles).map((file) => {
@@ -111,24 +112,28 @@ export function BulkUploader() {
         onDragLeave={() => setDragOver(false)}
         onDrop={handleDrop}
       >
-        <div className="flex flex-col items-center justify-center text-center gap-3">
-          <Upload className="h-8 w-8 text-muted-foreground" />
+        <div
+          className="flex flex-col items-center justify-center text-center gap-3 cursor-pointer"
+          onClick={() => fileInputRef.current?.click()}
+        >
+          <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center transition-transform duration-200 hover:scale-110">
+            <Upload className="h-5 w-5 text-primary" />
+          </div>
           <div>
             <p className="text-sm font-medium">
-              Drop multiple invoices here, or{" "}
-              <label className="text-primary cursor-pointer hover:underline">
-                browse
-                <input
-                  type="file"
-                  className="hidden"
-                  accept=".pdf,.png,.jpg,.jpeg,.webp"
-                  multiple
-                  onChange={handleFileInput}
-                />
-              </label>
+              Arrastra múltiples facturas aquí, o{" "}
+              <span className="text-primary hover:underline">explorar</span>
             </p>
-            <p className="text-xs text-muted-foreground">PDF, PNG, JPG, WEBP up to 10MB each</p>
+            <p className="text-xs text-muted-foreground">PDF, PNG, JPG, WEBP hasta 10MB cada uno</p>
           </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            className="hidden"
+            accept=".pdf,.png,.jpg,.jpeg,.webp"
+            multiple
+            onChange={handleFileInput}
+          />
         </div>
       </Card>
 

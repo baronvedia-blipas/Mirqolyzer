@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Upload, FileText, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ export function InvoiceUploader() {
   const [uploadState, setUploadState] = useState<UploadState>({ status: "idle", progress: 0 });
   const router = useRouter();
   const { t } = useLanguage();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = useCallback(async (file: File) => {
     setUploadState({ status: "validating", progress: 10 });
@@ -140,21 +141,30 @@ export function InvoiceUploader() {
             <p className="text-sm text-success font-semibold">{t("upload.success")}</p>
           </div>
         ) : (
-          <>
+          <div
+            className="cursor-pointer flex flex-col items-center gap-4"
+            onClick={() => fileInputRef.current?.click()}
+          >
             <div className="h-14 w-14 rounded-full bg-primary/10 flex items-center justify-center transition-transform duration-200 group-hover:scale-110">
               <Upload className="h-6 w-6 text-primary" />
             </div>
             <div className="space-y-1.5">
               <p className="text-sm font-semibold text-foreground">
                 {t("upload.dragDrop")}{" "}
-                <label className="text-primary cursor-pointer hover:underline underline-offset-2 transition-colors">
+                <span className="text-primary hover:underline underline-offset-2 transition-colors">
                   {t("upload.browse")}
-                  <input type="file" className="hidden" accept=".pdf,.png,.jpg,.jpeg,.webp" onChange={handleFileInput} />
-                </label>
+                </span>
               </p>
               <p className="text-xs text-muted-foreground">{t("upload.fileTypes")}</p>
             </div>
-          </>
+            <input
+              ref={fileInputRef}
+              type="file"
+              className="hidden"
+              accept=".pdf,.png,.jpg,.jpeg,.webp"
+              onChange={handleFileInput}
+            />
+          </div>
         )}
       </div>
     </Card>
