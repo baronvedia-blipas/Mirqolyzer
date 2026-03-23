@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { useLanguage } from "@/lib/i18n/context";
 import { User, Building2, Mail, Shield, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function SettingsPage() {
   const [fullName, setFullName] = useState("");
@@ -36,6 +37,7 @@ export default function SettingsPage() {
     if (user) { await supabase.from("profiles").update({ full_name: fullName, company }).eq("id", user.id); }
     setLoading(false);
     setSaved(true);
+    toast.success("Perfil actualizado");
     setTimeout(() => setSaved(false), 2000);
   }
 

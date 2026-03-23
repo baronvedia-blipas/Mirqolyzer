@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Trash2, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface DeleteInvoiceButtonProps {
   invoiceId: string;
@@ -19,9 +20,11 @@ export function DeleteInvoiceButton({ invoiceId }: DeleteInvoiceButtonProps) {
     const res = await fetch(`/api/invoices/${invoiceId}`, { method: "DELETE" });
 
     if (res.ok) {
+      toast.success("Factura eliminada");
       router.push("/dashboard");
       router.refresh();
     } else {
+      toast.error("Error al eliminar la factura");
       setDeleting(false);
       setConfirming(false);
     }

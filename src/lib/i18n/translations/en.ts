@@ -205,6 +205,14 @@ const en = {
   "faq.a5": "Yes, CSV export is available on all plans. JSON export is available on Pro and Business plans.",
   "faq.q6": "How does the free plan work?",
   "faq.a6": "The free plan includes up to 5 invoices per month, no credit card required. You can upgrade anytime.",
+
+  // Share
+  "share.button": "Share",
+  "share.copied": "Link copied",
+  "share.expires": "Expires in 24 hours",
+  "share.expired": "This link has expired",
+  "share.invalid": "Invalid link",
+  "share.poweredBy": "Powered by",
 } as const;
 
 export default en;

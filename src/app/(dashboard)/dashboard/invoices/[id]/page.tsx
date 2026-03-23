@@ -8,7 +8,9 @@ import Link from "next/link";
 import { ArrowLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DeleteInvoiceButton } from "@/components/invoices/delete-invoice-button";
+import { ShareButton } from "@/components/invoices/share-button";
 import { CategorySelector } from "@/components/invoices/category-selector";
+import { EditHistory } from "@/components/invoices/edit-history";
 import { TranslatedCardTitle, ConfidenceLabel } from "@/components/invoices/invoice-detail-cards";
 
 const STATUS_BADGE: Record<string, string> = {
@@ -72,6 +74,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
           >
             {invoice.status}
           </Badge>
+          <ShareButton invoiceId={invoice.id} />
           <DeleteInvoiceButton invoiceId={invoice.id} />
         </div>
       </div>
@@ -141,6 +144,9 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit history */}
+      <EditHistory extractedData={invoice.extracted_data} />
 
       {/* Category selector */}
       <CategorySelector

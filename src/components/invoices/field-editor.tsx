@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getConfidenceLevel } from "@/lib/extraction/confidence-scorer";
 import { useLanguage } from "@/lib/i18n/context";
+import { toast } from "sonner";
 
 interface FieldEditorProps {
   label: string;
@@ -27,7 +28,7 @@ export function FieldEditor({ label, value, confidence, fieldName, invoiceId, on
   const level = getConfidenceLevel(confidence);
   const { t } = useLanguage();
 
-  async function handleSave() { setSaving(true); await onUpdate(fieldName, editValue); setSaving(false); setEditing(false); }
+  async function handleSave() { setSaving(true); await onUpdate(fieldName, editValue); setSaving(false); setEditing(false); toast.success("Campo actualizado"); }
   function handleCancel() { setEditValue(String(value)); setEditing(false); }
 
   const confidencePercent = Math.round(confidence * 100);

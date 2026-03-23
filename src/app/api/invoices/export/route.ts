@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { getPlanLimits } from "@/lib/stripe/plans";
 import type { Plan } from "@/types/user";
+import * as XLSX from "xlsx";
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
@@ -17,9 +18,9 @@ export async function GET(request: NextRequest) {
     .single();
 
   const limits = getPlanLimits((profile?.plan ?? "free") as Plan);
-  if (format === "json" && !limits.can_export_json) {
+  if ((format === "json" || format === "xlsx") && !limits.can_export_json) {
     return NextResponse.json(
-      { error: "JSON export requires Pro or Business plan" },
+      { error: `${format.toUpperCase()} export requires Pro or Business plan` },
       { status: 403 }
     );
   }
@@ -54,6 +55,49 @@ export async function GET(request: NextRequest) {
       headers: {
         "Content-Type": "application/json",
         "Content-Disposition": `attachment; filename="mirqolyzer-export-${new Date().toISOString().split("T")[0]}.json"`,
+      },
+    });
+  }
+
+  if (format === "xlsx") {
+    const xlsxHeaders = ["Invoice Number", "Vendor", "Date", "Total", "Currency", "Tax", "Subtotal", "Category", "File", "Confidence", "Uploaded"];
+    const xlsxRows = invoices.map((inv) => [
+      inv.invoice_number ?? "",
+      inv.vendor_name ?? "",
+      inv.invoice_date ?? "",
+      inv.total_amount ?? "",
+      inv.currency ?? "",
+      inv.tax_amount ?? "",
+      inv.subtotal_amount ?? "",
+      inv.category ?? "",
+      inv.file_name,
+      inv.confidence_score != null ? Number(inv.confidence_score.toFixed(2)) : "",
+      inv.created_at,
+    ]);
+
+    const ws = XLSX.utils.aoa_to_sheet([xlsxHeaders, ...xlsxRows]);
+    ws["!cols"] = [
+      { wch: 18 }, // Invoice Number
+      { wch: 25 }, // Vendor
+      { wch: 12 }, // Date
+      { wch: 12 }, // Total
+      { wch: 8 },  // Currency
+      { wch: 12 }, // Tax
+      { wch: 12 }, // Subtotal
+      { wch: 14 }, // Category
+      { wch: 30 }, // File
+      { wch: 10 }, // Confidence
+      { wch: 22 }, // Uploaded
+    ];
+
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Invoices");
+    const xlsxBuffer = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
+
+    return new NextResponse(xlsxBuffer, {
+      headers: {
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Disposition": `attachment; filename="mirqolyzer-export-${new Date().toISOString().split("T")[0]}.xlsx"`,
       },
     });
   }

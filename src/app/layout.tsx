@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { LanguageProvider } from "@/lib/i18n/context";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const geistMono = Geist_Mono({
@@ -10,9 +11,46 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Mirqolyzer — Analyze invoices in seconds",
+  title: {
+    default: "Mirqolyzer — Analiza facturas en segundos",
+    template: "%s | Mirqolyzer",
+  },
   description:
-    "Upload invoices and receipts. Our OCR engine extracts vendor, amounts, dates, and tax data instantly. No AI subscription required.",
+    "Sube facturas y recibos. Nuestro motor OCR extrae datos de proveedores, montos, fechas e impuestos al instante. Sin APIs de IA.",
+  keywords: [
+    "factura",
+    "OCR",
+    "analizar facturas",
+    "Bolivia",
+    "contabilidad",
+    "SaaS",
+    "invoice analyzer",
+  ],
+  authors: [{ name: "Mirqolyzer" }],
+  openGraph: {
+    type: "website",
+    locale: "es_BO",
+    url: "https://mirqolyzer.com",
+    siteName: "Mirqolyzer",
+    title: "Mirqolyzer — Analiza facturas en segundos",
+    description:
+      "Motor OCR para extraer datos de facturas y recibos automáticamente.",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Mirqolyzer",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Mirqolyzer — Analiza facturas en segundos",
+    description:
+      "Motor OCR para extraer datos de facturas y recibos automáticamente.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({
@@ -31,6 +69,7 @@ export default function RootLayout({
         >
           <LanguageProvider>
             {children}
+            <Toaster position="top-right" richColors closeButton />
           </LanguageProvider>
         </ThemeProvider>
       </body>

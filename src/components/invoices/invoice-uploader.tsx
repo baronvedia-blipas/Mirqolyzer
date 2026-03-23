@@ -8,6 +8,9 @@ import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { validateFileType, validateFileSize, MAX_FILE_SIZE } from "@/lib/utils/file-validators";
 import { useLanguage } from "@/lib/i18n/context";
+import { toast } from "sonner";
+import { useFirstInvoice } from "@/hooks/use-first-invoice";
+import { Confetti } from "@/components/ui/confetti";
 
 interface UploadState {
   status: "idle" | "validating" | "uploading" | "processing" | "done" | "error";
@@ -22,11 +25,12 @@ export function InvoiceUploader() {
   const router = useRouter();
   const { t } = useLanguage();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { showConfetti, triggerConfetti, dismiss } = useFirstInvoice();
 
   const handleFile = useCallback(async (file: File) => {
     setUploadState({ status: "validating", progress: 10 });
-    if (!validateFileType(file.type)) { setUploadState({ status: "error", progress: 0, error: t("upload.fileTypeError") }); return; }
-    if (!validateFileSize(file.size)) { setUploadState({ status: "error", progress: 0, error: `File exceeds ${MAX_FILE_SIZE / 1024 / 1024}MB limit` }); return; }
+    if (!validateFileType(file.type)) { setUploadState({ status: "error", progress: 0, error: t("upload.fileTypeError") }); toast.error(t("upload.fileTypeError")); return; }
+    if (!validateFileSize(file.size)) { const msg = `File exceeds ${MAX_FILE_SIZE / 1024 / 1024}MB limit`; setUploadState({ status: "error", progress: 0, error: msg }); toast.error(msg); return; }
 
     setUploadState({ status: "uploading", progress: 30 });
     const formData = new FormData();
@@ -38,16 +42,20 @@ export function InvoiceUploader() {
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 409) { setUploadState({ status: "error", progress: 0, error: data.error, duplicateId: data.duplicate_id }); return; }
+        if (res.status === 409) { setUploadState({ status: "error", progress: 0, error: data.error, duplicateId: data.duplicate_id }); toast.warning("Esta factura ya fue subida"); return; }
         throw new Error(data.error || "Upload failed");
       }
 
       setUploadState({ status: "done", progress: 100 });
+      const isFirst = triggerConfetti();
+      toast.success(isFirst ? "\ud83c\udf89 \u00a1Tu primera factura fue procesada!" : "Factura procesada exitosamente");
       setTimeout(() => { router.push(`/dashboard/invoices/${data.id}`); router.refresh(); }, 500);
     } catch (err) {
-      setUploadState({ status: "error", progress: 0, error: err instanceof Error ? err.message : "Upload failed" });
+      const errorMsg = err instanceof Error ? err.message : "Upload failed";
+      setUploadState({ status: "error", progress: 0, error: errorMsg });
+      toast.error(errorMsg);
     }
-  }, [router, t]);
+  }, [router, t, triggerConfetti]);
 
   function handleDrop(e: React.DragEvent) { e.preventDefault(); setDragOver(false); const file = e.dataTransfer.files[0]; if (file) handleFile(file); }
   function handleFileInput(e: React.ChangeEvent<HTMLInputElement>) { const file = e.target.files?.[0]; if (file) handleFile(file); e.target.value = ""; }
@@ -55,6 +63,7 @@ export function InvoiceUploader() {
   const isProcessing = ["validating", "uploading", "processing"].includes(uploadState.status);
 
   return (
+    <>
     <Card
       className={cn(
         "relative border-2 border-dashed transition-all duration-300 overflow-hidden",
@@ -168,5 +177,7 @@ export function InvoiceUploader() {
         )}
       </div>
     </Card>
+    {showConfetti && <Confetti onComplete={dismiss} />}
+    </>
   );
 }

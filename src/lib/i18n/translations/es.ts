@@ -205,6 +205,14 @@ const es = {
   "faq.a5": "Sí, la exportación en CSV está disponible en todos los planes. La exportación en JSON está disponible en los planes Pro y Business.",
   "faq.q6": "¿Cómo funciona el plan gratuito?",
   "faq.a6": "El plan gratuito incluye hasta 5 facturas por mes, sin necesidad de tarjeta de crédito. Puedes mejorar tu plan en cualquier momento.",
+
+  // Share
+  "share.button": "Compartir",
+  "share.copied": "Enlace copiado",
+  "share.expires": "Expira en 24 horas",
+  "share.expired": "Este enlace ha expirado",
+  "share.invalid": "Enlace no válido",
+  "share.poweredBy": "Potenciado por",
 } as const;
 
 export default es;

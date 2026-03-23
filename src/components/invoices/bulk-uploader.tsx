@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { validateFileType, validateFileSize, MAX_FILE_SIZE } from "@/lib/utils/file-validators";
+import { toast } from "sonner";
 
 interface FileUploadState {
   file: File;
@@ -42,6 +43,7 @@ export function BulkUploader() {
   async function uploadAll() {
     setUploading(true);
     const pending = files.filter((f) => f.status === "pending");
+    let successCount = 0;
 
     for (let i = 0; i < pending.length; i++) {
       const fileState = pending[i];
@@ -68,6 +70,7 @@ export function BulkUploader() {
             )
           );
         } else {
+          successCount++;
           setFiles((prev) =>
             prev.map((f, j) =>
               j === idx ? { ...f, status: "done", invoiceId: data.id } : f
@@ -84,6 +87,9 @@ export function BulkUploader() {
     }
 
     setUploading(false);
+    if (successCount > 0) {
+      toast.success(`${successCount} facturas procesadas`);
+    }
     router.refresh();
   }
 

@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
@@ -6,13 +7,20 @@ import { RecentInvoices } from "@/components/dashboard/recent-invoices";
 import { UploadTabs } from "@/components/invoices/upload-tabs";
 import { InvoiceFilters } from "@/components/invoices/invoice-filters";
 import { DashboardTitle } from "@/components/dashboard/page-title";
-import { MonthlySpendChart } from "@/components/dashboard/monthly-spend-chart";
-import { CategoryChart } from "@/components/dashboard/category-chart";
-import { TopVendorsChart } from "@/components/dashboard/top-vendors-chart";
+import {
+  MonthlySpendChartLazy,
+  CategoryChartLazy,
+  TopVendorsChartLazy,
+} from "@/components/dashboard/charts-lazy";
 import { getCategoryLabel } from "@/lib/utils/categories";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { OnboardingGuide } from "@/components/dashboard/onboarding-guide";
 import { EnrichedStats } from "@/components/dashboard/enriched-stats";
+
+export const metadata: Metadata = {
+  title: "Panel",
+  description: "Panel de control de Mirqolyzer. Visualiza y gestiona tus facturas.",
+};
 
 interface DashboardPageProps {
   searchParams: Promise<Record<string, string | undefined>>;
@@ -138,12 +146,12 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
 
       {/* Analytics Charts */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <MonthlySpendChart data={monthlySpendData} currency={currency} />
-        <CategoryChart data={categoryData} totalAmount={totalAmount} currency={currency} />
+        <MonthlySpendChartLazy data={monthlySpendData} currency={currency} />
+        <CategoryChartLazy data={categoryData} totalAmount={totalAmount} currency={currency} />
       </section>
 
       <section>
-        <TopVendorsChart data={topVendorsData} currency={currency} />
+        <TopVendorsChartLazy data={topVendorsData} currency={currency} />
       </section>
     </div>
   );

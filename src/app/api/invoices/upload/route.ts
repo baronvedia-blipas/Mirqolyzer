@@ -6,6 +6,7 @@ import { isFuzzyDuplicate } from "@/lib/duplicate/similarity-matcher";
 import { processDocument } from "@/lib/ocr/pipeline";
 import { extractFields } from "@/lib/extraction/field-extractor";
 import { calculateOverallConfidence } from "@/lib/extraction/confidence-scorer";
+import { classifyDocument } from "@/lib/extraction/document-classifier";
 import { getPlanLimits } from "@/lib/stripe/plans";
 import type { Plan } from "@/types/user";
 
@@ -99,6 +100,13 @@ export async function POST(request: NextRequest) {
     const extractedData = extractFields(ocrResult.text);
     const confidenceScore = calculateOverallConfidence(extractedData);
 
+    // Classify document type
+    const docClassification = classifyDocument(ocrResult.text);
+    (extractedData as any).document_type = {
+      value: docClassification.type,
+      confidence: docClassification.confidence,
+    };
+
     // Check for fuzzy duplicates
     let duplicateOf: string | null = null;
     if (extractedData.vendor_name.value && extractedData.total.value && extractedData.date.value) {
@@ -132,6 +140,7 @@ export async function POST(request: NextRequest) {
         currency: extractedData.currency.value || null,
         tax_amount: extractedData.tax.value || null,
         subtotal_amount: extractedData.subtotal.value || null,
+        category: docClassification.type,
         confidence_score: confidenceScore,
         duplicate_of: duplicateOf,
       })
