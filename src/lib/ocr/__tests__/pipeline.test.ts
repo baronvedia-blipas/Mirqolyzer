@@ -9,9 +9,9 @@ vi.mock("pdf-parse", () => ({
 }));
 
 vi.mock("tesseract.js", () => ({
-  default: {
+  createWorker: vi.fn().mockResolvedValue({
     recognize: vi.fn().mockResolvedValue({ data: { text: "OCR extracted text" } }),
-  },
+  }),
 }));
 
 import { processDocument } from "../pipeline";
