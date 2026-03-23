@@ -11,6 +11,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   title: {
     default: "Mirqolyzer — Analiza facturas en segundos",
     template: "%s | Mirqolyzer",

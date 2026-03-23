@@ -53,8 +53,14 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }
 
+// Fallback for when component renders outside provider (e.g., during SSR/error boundaries)
+const fallbackValue: LanguageContextValue = {
+  locale: "es",
+  setLocale: () => {},
+  t: (key: TranslationKey) => translations["es"][key] ?? key,
+};
+
 export function useLanguage() {
   const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error("useLanguage must be used within a LanguageProvider");
-  return ctx;
+  return ctx ?? fallbackValue;
 }
