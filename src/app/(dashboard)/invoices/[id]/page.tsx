@@ -16,8 +16,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: invoice } = await supabase.from("invoices").select("*").eq("id", id).eq("user_id", user.id).single();
-  if (!invoice) notFound();
+  const { data: invoice, error: invoiceError } = await supabase.from("invoices").select("*").eq("id", id).eq("user_id", user.id).single();
+  if (invoiceError || !invoice) notFound();
 
   const { data: signedUrl } = await supabase.storage.from("invoices").createSignedUrl(invoice.file_url, 3600);
 

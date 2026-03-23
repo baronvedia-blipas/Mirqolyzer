@@ -32,7 +32,8 @@
       "Bash(gh auth:*)",
       "Bash(gh repo:*)",
       "Bash(git rm:*)",
-      "Bash(ls src/components/invoices/invoice-filters.tsx src/lib/utils/categories.ts src/components/invoices/category-selector.tsx src/components/invoices/delete-invoice-button.tsx src/app/\\\\\\(dashboard\\\\\\)/dashboard/loading.tsx src/app/\\\\\\(dashboard\\\\\\)/invoices/[id]/loading.tsx src/app/\\\\\\(dashboard\\\\\\)/settings/loading.tsx src/components/invoices/bulk-uploader.tsx src/hooks/use-realtime-invoices.ts src/components/dashboard/realtime-dashboard.tsx src/components/invoices/processing-indicator.tsx e2e/landing-page.spec.ts playwright.config.ts)"
+      "Bash(ls src/components/invoices/invoice-filters.tsx src/lib/utils/categories.ts src/components/invoices/category-selector.tsx src/components/invoices/delete-invoice-button.tsx src/app/\\\\\\(dashboard\\\\\\)/dashboard/loading.tsx src/app/\\\\\\(dashboard\\\\\\)/invoices/[id]/loading.tsx src/app/\\\\\\(dashboard\\\\\\)/settings/loading.tsx src/components/invoices/bulk-uploader.tsx src/hooks/use-realtime-invoices.ts src/components/dashboard/realtime-dashboard.tsx src/components/invoices/processing-indicator.tsx e2e/landing-page.spec.ts playwright.config.ts)",
+      "Bash(git push:*)"
     ]
   }
 }

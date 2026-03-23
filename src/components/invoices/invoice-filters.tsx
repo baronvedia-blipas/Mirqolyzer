@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -11,31 +11,40 @@ export function InvoiceFilters() {
   const searchParams = useSearchParams();
   const [search, setSearch] = useState(searchParams.get("q") ?? "");
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const isUserTyping = useRef(false);
 
-  const updateParams = useCallback(
-    (key: string, value: string) => {
-      const params = new URLSearchParams(searchParams.toString());
-      if (value) {
-        params.set(key, value);
-      } else {
-        params.delete(key);
-      }
-      params.set("page", "1");
-      router.push(`/dashboard?${params.toString()}`);
-    },
-    [router, searchParams]
-  );
+  function updateParams(key: string, value: string) {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+    // Don't add page=1 if there are no other params
+    const str = params.toString();
+    router.push(str ? `/dashboard?${str}` : "/dashboard");
+  }
 
-  // Debounced search
+  // Debounced search — only fires when user types, not on URL changes
   useEffect(() => {
+    if (!isUserTyping.current) return;
+
     const timer = setTimeout(() => {
+      isUserTyping.current = false;
       updateParams("q", search);
-    }, 300);
+    }, 400);
     return () => clearTimeout(timer);
-  }, [search, updateParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [search]);
+
+  function handleSearchChange(value: string) {
+    isUserTyping.current = true;
+    setSearch(value);
+  }
 
   function clearFilters() {
     setSearch("");
+    isUserTyping.current = false;
     router.push("/dashboard");
   }
 
@@ -49,7 +58,7 @@ export function InvoiceFilters() {
           <Input
             placeholder="Search invoices by vendor or number..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-9"
           />
         </div>
