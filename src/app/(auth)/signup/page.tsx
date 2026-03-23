@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLanguage } from "@/lib/i18n/context";
+import { sendWelcomeEmail } from "@/lib/services/email-service";
 
 export default function SignupPage() {
   const [fullName, setFullName] = useState("");
@@ -30,6 +31,8 @@ export default function SignupPage() {
       options: { data: { full_name: fullName }, emailRedirectTo: `${window.location.origin}/callback` },
     });
     if (error) { setError(error.message); setLoading(false); return; }
+    // Send welcome email placeholder (no-op in dev)
+    sendWelcomeEmail(email, fullName).catch(() => {});
     router.push("/dashboard");
     router.refresh();
   }
