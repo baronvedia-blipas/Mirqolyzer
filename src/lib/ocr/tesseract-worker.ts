@@ -1,16 +1,9 @@
-import { createWorker } from "tesseract.js";
-
-let worker: Awaited<ReturnType<typeof createWorker>> | null = null;
-
-async function getWorker() {
-  if (!worker) {
-    worker = await createWorker("eng+spa");
-  }
-  return worker;
-}
-
 export async function ocrImage(imageBuffer: Buffer): Promise<string> {
-  const w = await getWorker();
-  const { data: { text } } = await w.recognize(imageBuffer);
+  // Dynamic import with webpackIgnore comment prevents Turbopack from
+  // bundling tesseract.js (which breaks its __dirname-based worker path)
+  const { createWorker } = await import(/* webpackIgnore: true */ "tesseract.js");
+  const worker = await createWorker("eng+spa");
+  const { data: { text } } = await worker.recognize(imageBuffer);
+  await worker.terminate();
   return text;
 }

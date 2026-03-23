@@ -11,6 +11,7 @@ vi.mock("pdf-parse", () => ({
 vi.mock("tesseract.js", () => ({
   createWorker: vi.fn().mockResolvedValue({
     recognize: vi.fn().mockResolvedValue({ data: { text: "OCR extracted text" } }),
+    terminate: vi.fn().mockResolvedValue(undefined),
   }),
 }));
 

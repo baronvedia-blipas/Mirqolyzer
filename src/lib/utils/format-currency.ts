@@ -5,6 +5,19 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
   MXN: "$",
   CAD: "CA$",
   AUD: "A$",
+  BOB: "Bs.",
+  PEN: "S/.",
+  BRL: "R$",
+  ARS: "$",
+  COP: "$",
+  CLP: "$",
+  DOP: "RD$",
+  GTQ: "Q.",
+  HNL: "L.",
+  UYU: "$U",
+  PYG: "₲",
+  JPY: "¥",
+  CNY: "¥",
 };
 
 export function formatCurrency(amount: number, currency: string = "USD"): string {

@@ -32,6 +32,22 @@ describe("extractInvoiceNumber", () => {
     expect(result?.confidence).toBeGreaterThanOrEqual(0.8);
   });
 
+  it("matches 'Número de transacción 12345'", () => {
+    const result = extractInvoiceNumber("Número de transacción 12345\nFecha: 18/03/2026");
+    expect(result?.value).toBe("12345");
+    expect(result?.confidence).toBe(0.9);
+  });
+
+  it("matches 'Comprobante 00789'", () => {
+    const result = extractInvoiceNumber("Comprobante 00789\nMonto: Bs. 500.00");
+    expect(result?.value).toBe("00789");
+  });
+
+  it("matches 'Transacción: ABC-789'", () => {
+    const result = extractInvoiceNumber("Transacción: ABC-789");
+    expect(result?.value).toBe("ABC-789");
+  });
+
   it("returns null when no pattern matches", () => {
     const result = extractInvoiceNumber("Just some random text here\nWith nothing useful");
     expect(result).toBeNull();
@@ -63,6 +79,18 @@ describe("extractDates", () => {
     expect(results[0].value).toBe("2025-01-15");
   });
 
+  it("matches '15 de enero de 2025' (Spanish)", () => {
+    const results = extractDates("Fecha: 15 de enero de 2025");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe("2025-01-15");
+  });
+
+  it("matches '18/03/2026' from Bolivian receipt", () => {
+    const results = extractDates("Fecha y hora\n18/03/2026 12:33:24");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe("2026-03-18");
+  });
+
   it("returns empty array for no dates", () => {
     const results = extractDates("No dates here");
     expect(results).toEqual([]);
@@ -88,6 +116,30 @@ describe("extractAmounts", () => {
     expect(results[0].value).toBe(99.99);
   });
 
+  it("matches 'Bs. 900.00' (Bolivian)", () => {
+    const results = extractAmounts("Monto\nBs. 900.00");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe(900.0);
+  });
+
+  it("matches 'Bs 1,234.56'", () => {
+    const results = extractAmounts("Total: Bs 1,234.56");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe(1234.56);
+  });
+
+  it("matches 'S/. 500.00' (Peruvian)", () => {
+    const results = extractAmounts("Total: S/. 500.00");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe(500.0);
+  });
+
+  it("matches 'R$ 1.234,56' (Brazilian)", () => {
+    const results = extractAmounts("Total: R$ 1.234,56");
+    expect(results.length).toBeGreaterThan(0);
+    expect(results[0].value).toBe(1234.56);
+  });
+
   it("returns empty for no amounts", () => {
     const results = extractAmounts("No amounts here");
     expect(results).toEqual([]);
@@ -105,6 +157,22 @@ describe("extractCurrency", () => {
 
   it("detects MXN from text", () => {
     expect(extractCurrency("Total: $500.00 MXN")).toBe("MXN");
+  });
+
+  it("detects BOB from 'Bs.'", () => {
+    expect(extractCurrency("Monto\nBs. 900.00")).toBe("BOB");
+  });
+
+  it("detects PEN from 'S/.'", () => {
+    expect(extractCurrency("Total: S/. 500.00")).toBe("PEN");
+  });
+
+  it("detects BRL from 'R$'", () => {
+    expect(extractCurrency("Total: R$ 1.234,56")).toBe("BRL");
+  });
+
+  it("detects DOP from 'RD$'", () => {
+    expect(extractCurrency("Total: RD$ 2,000.00")).toBe("DOP");
   });
 
   it("defaults to USD", () => {
@@ -131,6 +199,19 @@ describe("extractTotal", () => {
     const result = extractTotal(text);
     expect(result?.value).toBe(75.5);
   });
+
+  it("extracts amount after 'Monto' (Spanish)", () => {
+    const text = "Monto\nBs. 900.00\nFecha y hora";
+    const result = extractTotal(text);
+    expect(result?.value).toBe(900.0);
+  });
+
+  it("falls back to largest amount when no label found", () => {
+    const text = "Item: $50.00\nShipping: $10.00\n$200.00";
+    const result = extractTotal(text);
+    expect(result?.value).toBe(200.0);
+    expect(result?.confidence).toBeLessThan(0.7); // Lower confidence for fallback
+  });
 });
 
 describe("extractTax", () => {
@@ -147,6 +228,11 @@ describe("extractTax", () => {
   it("extracts amount after 'VAT'", () => {
     const result = extractTax("VAT 20%: $20.00");
     expect(result?.value).toBe(20.0);
+  });
+
+  it("extracts amount after 'Impuesto'", () => {
+    const result = extractTax("Impuesto: Bs. 50.00");
+    expect(result?.value).toBe(50.0);
   });
 });
 
@@ -173,5 +259,26 @@ describe("extractVendorName", () => {
     const text = "INVOICE\nBEST COMPANY LLC\n123 Main St";
     const result = extractVendorName(text);
     expect(result?.value).toBe("BEST COMPANY LLC");
+  });
+
+  it("extracts bank name from 'Del banco:' label", () => {
+    const text = "Monto\nBs. 900.00\nDel banco\nBanco de Crédito de Bolivia S.A.";
+    const result = extractVendorName(text);
+    expect(result?.value).toBe("Banco de Crédito de Bolivia S.A.");
+    expect(result?.confidence).toBe(0.85);
+  });
+
+  it("skips 'Monto', 'Fecha', and other Spanish labels", () => {
+    const text = "Monto\nBs. 900.00\nFecha y hora\n18/03/2026\nSome Company";
+    const result = extractVendorName(text);
+    // Should NOT return "Monto" or "Fecha y hora"
+    expect(result?.value).not.toBe("Monto");
+    expect(result?.value).not.toMatch(/^Fecha/);
+  });
+
+  it("skips standalone amounts", () => {
+    const text = "900.00\nCentral Bank Corp\nFecha: 2025-01-01";
+    const result = extractVendorName(text);
+    expect(result?.value).toBe("Central Bank Corp");
   });
 });
