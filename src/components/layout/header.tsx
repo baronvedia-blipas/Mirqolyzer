@@ -6,7 +6,9 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { LogOut, Settings, User, Menu } from "lucide-react";
 import { ThemeToggle } from "./theme-toggle";
+import { LanguageToggle } from "./language-toggle";
 import type { Profile } from "@/types/user";
+import { useLanguage } from "@/lib/i18n/context";
 
 interface HeaderProps {
   profile: Profile;
@@ -16,6 +18,7 @@ interface HeaderProps {
 export function Header({ profile, onMenuClick }: HeaderProps) {
   const router = useRouter();
   const supabase = createClient();
+  const { t } = useLanguage();
 
   async function handleLogout() {
     await supabase.auth.signOut();
@@ -30,6 +33,7 @@ export function Header({ profile, onMenuClick }: HeaderProps) {
         <h1 className="text-lg font-semibold text-foreground lg:hidden"><span className="font-bold">Mirqo</span><span className="font-light">lyzer</span></h1>
       </div>
       <div className="flex items-center gap-2">
+      <LanguageToggle />
       <ThemeToggle />
       <DropdownMenu>
         <DropdownMenuTrigger render={<Button variant="ghost" className="flex items-center gap-2" />}>
@@ -37,9 +41,9 @@ export function Header({ profile, onMenuClick }: HeaderProps) {
             <span className="hidden sm:inline text-sm">{profile.full_name || "Account"}</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}><Settings className="mr-2 h-4 w-4" />Settings</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => router.push("/dashboard/settings")}><Settings className="mr-2 h-4 w-4" />{t("nav.settings")}</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}><LogOut className="mr-2 h-4 w-4" />Sign out</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogout}><LogOut className="mr-2 h-4 w-4" />{t("nav.signOut")}</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
       </div>

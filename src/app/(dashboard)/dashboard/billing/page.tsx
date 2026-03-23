@@ -8,11 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Check } from "lucide-react";
 import { PLANS, getPlanLimits } from "@/lib/stripe/plans";
 import type { Plan, Profile } from "@/types/user";
+import { useLanguage } from "@/lib/i18n/context";
 
 export default function BillingPage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
   const supabase = createClient();
+  const { t } = useLanguage();
 
   useEffect(() => {
     async function load() {
@@ -45,15 +47,15 @@ export default function BillingPage() {
 
   return (
     <div className="max-w-4xl space-y-6">
-      <h2 className="text-2xl font-bold">Billing</h2>
+      <h2 className="text-2xl font-bold">{t("billing.title")}</h2>
       <Card>
-        <CardHeader><CardTitle className="text-lg">Current Plan</CardTitle></CardHeader>
+        <CardHeader><CardTitle className="text-lg">{t("billing.currentPlan")}</CardTitle></CardHeader>
         <CardContent className="flex items-center justify-between">
           <div>
             <p className="text-lg font-semibold capitalize">{profile.plan}</p>
-            <p className="text-sm text-muted-foreground">{profile.invoice_count_this_month} / {currentLimits.invoices_per_month} invoices used this month</p>
+            <p className="text-sm text-muted-foreground">{profile.invoice_count_this_month} / {currentLimits.invoices_per_month} {t("billing.invoicesUsed")}</p>
           </div>
-          {profile.stripe_customer_id && <Button variant="outline" onClick={handleManage} disabled={loading === "manage"}>{loading === "manage" ? "Loading..." : "Manage Subscription"}</Button>}
+          {profile.stripe_customer_id && <Button variant="outline" onClick={handleManage} disabled={loading === "manage"}>{loading === "manage" ? t("billing.loading") : t("billing.manageSubscription")}</Button>}
         </CardContent>
       </Card>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -66,9 +68,9 @@ export default function BillingPage() {
             <CardContent className="space-y-4">
               <ul className="space-y-1.5 text-sm">{plan.features.map((f) => (<li key={f} className="flex items-center gap-2"><Check className="h-3 w-3 text-success" />{f}</li>))}</ul>
               {plan.plan === profile.plan ? (
-                <Badge className="w-full justify-center">Current Plan</Badge>
+                <Badge className="w-full justify-center">{t("pricing.currentPlan")}</Badge>
               ) : plan.price > 0 ? (
-                <Button className="w-full" onClick={() => handleUpgrade(plan.plan)} disabled={loading === plan.plan}>{loading === plan.plan ? "Loading..." : "Upgrade"}</Button>
+                <Button className="w-full" onClick={() => handleUpgrade(plan.plan)} disabled={loading === plan.plan}>{loading === plan.plan ? t("billing.loading") : t("billing.upgrade")}</Button>
               ) : null}
             </CardContent>
           </Card>

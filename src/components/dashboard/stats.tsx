@@ -1,6 +1,9 @@
+"use client";
+
 import { FileText, CheckCircle, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { formatCurrency } from "@/lib/utils/format-currency";
+import { useLanguage } from "@/lib/i18n/context";
 
 interface StatsProps {
   total: number;
@@ -12,11 +15,13 @@ interface StatsProps {
 }
 
 export function Stats({ total, completed, processing, totalAmount, currency }: StatsProps) {
+  const { t } = useLanguage();
+
   const items = [
-    { label: "Total Invoices", value: total, icon: FileText, color: "text-primary" },
-    { label: "Completed", value: completed, icon: CheckCircle, color: "text-success" },
-    { label: "Processing", value: processing, icon: Clock, color: "text-warning" },
-    { label: "Total Value", value: formatCurrency(totalAmount, currency), icon: FileText, color: "text-primary" },
+    { label: t("dashboard.totalInvoices"), value: total, icon: FileText, color: "text-primary" },
+    { label: t("dashboard.completed"), value: completed, icon: CheckCircle, color: "text-success" },
+    { label: t("dashboard.processing"), value: processing, icon: Clock, color: "text-warning" },
+    { label: t("dashboard.totalValue"), value: formatCurrency(totalAmount, currency), icon: FileText, color: "text-primary" },
   ];
 
   return (

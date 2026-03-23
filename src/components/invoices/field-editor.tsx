@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getConfidenceLevel } from "@/lib/extraction/confidence-scorer";
+import { useLanguage } from "@/lib/i18n/context";
 
 interface FieldEditorProps {
   label: string;
@@ -24,6 +25,7 @@ export function FieldEditor({ label, value, confidence, fieldName, invoiceId, on
   const [editValue, setEditValue] = useState(String(value));
   const [saving, setSaving] = useState(false);
   const level = getConfidenceLevel(confidence);
+  const { t } = useLanguage();
 
   async function handleSave() { setSaving(true); await onUpdate(fieldName, editValue); setSaving(false); setEditing(false); }
   function handleCancel() { setEditValue(String(value)); setEditing(false); }
@@ -45,7 +47,7 @@ export function FieldEditor({ label, value, confidence, fieldName, invoiceId, on
         </div>
       ) : (
         <div className="flex items-center justify-between">
-          <span className={cn("text-sm font-medium", !value && "text-muted-foreground italic")}>{value || "Not detected"}</span>
+          <span className={cn("text-sm font-medium", !value && "text-muted-foreground italic")}>{value || t("invoice.notDetected")}</span>
           <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => setEditing(true)}><Pencil className="h-3 w-3" /></Button>
         </div>
       )}

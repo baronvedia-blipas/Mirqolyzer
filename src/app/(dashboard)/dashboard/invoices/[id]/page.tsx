@@ -9,6 +9,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DeleteInvoiceButton } from "@/components/invoices/delete-invoice-button";
 import { CategorySelector } from "@/components/invoices/category-selector";
+import { TranslatedCardTitle, ConfidenceLabel } from "@/components/invoices/invoice-detail-cards";
 
 export default async function InvoiceDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -38,7 +39,7 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
-          <CardHeader><CardTitle className="text-sm">Original Document</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="text-sm"><TranslatedCardTitle translationKey="invoice.originalDocument" /></CardTitle></CardHeader>
           <CardContent>
             {signedUrl?.signedUrl ? (
               invoice.file_name.toLowerCase().endsWith(".pdf") ? (
@@ -53,8 +54,8 @@ export default async function InvoiceDetailPage({ params }: { params: Promise<{ 
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle className="text-sm">Extracted Data</CardTitle>
-            {invoice.confidence_score != null && <p className="text-xs text-muted-foreground">Overall confidence: {Math.round(invoice.confidence_score * 100)}%</p>}
+            <CardTitle className="text-sm"><TranslatedCardTitle translationKey="invoice.extractedData" /></CardTitle>
+            {invoice.confidence_score != null && <ConfidenceLabel score={invoice.confidence_score} />}
           </CardHeader>
           <CardContent><ExtractionView invoice={invoice} /></CardContent>
         </Card>

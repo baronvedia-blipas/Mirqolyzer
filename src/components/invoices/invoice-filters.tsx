@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X, SlidersHorizontal } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
 
 export function InvoiceFilters() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export function InvoiceFilters() {
   const [search, setSearch] = useState(searchParams.get("q") ?? "");
   const [showAdvanced, setShowAdvanced] = useState(false);
   const isUserTyping = useRef(false);
+  const { t } = useLanguage();
 
   function updateParams(key: string, value: string) {
     const params = new URLSearchParams(searchParams.toString());
@@ -56,7 +58,7 @@ export function InvoiceFilters() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search invoices by vendor or number..."
+            placeholder={t("filters.searchPlaceholder")}
             value={search}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-9"
@@ -72,7 +74,7 @@ export function InvoiceFilters() {
         </Button>
         {hasFilters && (
           <Button variant="ghost" size="sm" onClick={clearFilters}>
-            <X className="h-4 w-4 mr-1" /> Clear
+            <X className="h-4 w-4 mr-1" /> {t("filters.clear")}
           </Button>
         )}
       </div>
@@ -80,26 +82,26 @@ export function InvoiceFilters() {
       {showAdvanced && (
         <div className="flex flex-wrap items-center gap-3 p-3 rounded-lg border bg-muted/30">
           <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">Status</label>
+            <label className="text-xs text-muted-foreground">{t("filters.status")}</label>
             <select
               className="h-9 rounded-md border border-input bg-background px-3 text-sm"
               value={searchParams.get("status") ?? ""}
               onChange={(e) => updateParams("status", e.target.value)}
             >
-              <option value="">All</option>
-              <option value="completed">Completed</option>
-              <option value="processing">Processing</option>
-              <option value="failed">Failed</option>
+              <option value="">{t("filters.all")}</option>
+              <option value="completed">{t("status.completed")}</option>
+              <option value="processing">{t("status.processing")}</option>
+              <option value="failed">{t("status.failed")}</option>
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">Category</label>
+            <label className="text-xs text-muted-foreground">{t("filters.category")}</label>
             <select
               className="h-9 rounded-md border border-input bg-background px-3 text-sm"
               value={searchParams.get("category") ?? ""}
               onChange={(e) => updateParams("category", e.target.value)}
             >
-              <option value="">All</option>
+              <option value="">{t("filters.all")}</option>
               <option value="office_supplies">Office Supplies</option>
               <option value="travel">Travel</option>
               <option value="meals">Meals & Entertainment</option>
@@ -115,7 +117,7 @@ export function InvoiceFilters() {
             </select>
           </div>
           <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">From</label>
+            <label className="text-xs text-muted-foreground">{t("filters.from")}</label>
             <Input
               type="date"
               className="h-9 w-36"
@@ -124,7 +126,7 @@ export function InvoiceFilters() {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">To</label>
+            <label className="text-xs text-muted-foreground">{t("filters.to")}</label>
             <Input
               type="date"
               className="h-9 w-36"
@@ -133,16 +135,16 @@ export function InvoiceFilters() {
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs text-muted-foreground">Sort</label>
+            <label className="text-xs text-muted-foreground">{t("filters.sort")}</label>
             <select
               className="h-9 rounded-md border border-input bg-background px-3 text-sm"
               value={searchParams.get("sort_by") ?? "created_at"}
               onChange={(e) => updateParams("sort_by", e.target.value)}
             >
-              <option value="created_at">Newest</option>
-              <option value="total_amount">Amount</option>
-              <option value="vendor_name">Vendor</option>
-              <option value="invoice_date">Invoice Date</option>
+              <option value="created_at">{t("filters.newest")}</option>
+              <option value="total_amount">{t("filters.amount")}</option>
+              <option value="vendor_name">{t("filters.vendor")}</option>
+              <option value="invoice_date">{t("filters.invoiceDate")}</option>
             </select>
           </div>
         </div>
