@@ -4,7 +4,7 @@ import { validateFileType, validateFileSize } from "@/lib/utils/file-validators"
 import { generateFileHash } from "@/lib/duplicate/hash-generator";
 import { isFuzzyDuplicate } from "@/lib/duplicate/similarity-matcher";
 import { processDocument } from "@/lib/ocr/pipeline";
-import { extractFields } from "@/lib/extraction/field-extractor";
+import { hybridExtract } from "@/lib/extraction/hybrid-pipeline";
 import { calculateOverallConfidence } from "@/lib/extraction/confidence-scorer";
 import { classifyDocument } from "@/lib/extraction/document-classifier";
 import { getPlanLimits } from "@/lib/stripe/plans";
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const ocrResult = await processDocument(buffer, file.type, file.name);
-    const extractedData = extractFields(ocrResult.text);
+    const { data: extractedData, method: extractionMethod } = await hybridExtract(ocrResult.text);
     const confidenceScore = calculateOverallConfidence(extractedData);
 
     // Classify document type

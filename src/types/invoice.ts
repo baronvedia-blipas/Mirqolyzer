@@ -1,6 +1,6 @@
 export type InvoiceStatus = "uploading" | "processing" | "completed" | "failed";
 
-export type FieldSource = "regex" | "vendor_pattern" | "manual";
+export type FieldSource = "regex" | "vendor_pattern" | "manual" | "llm";
 
 export interface ExtractedField<T = string> {
   value: T;
